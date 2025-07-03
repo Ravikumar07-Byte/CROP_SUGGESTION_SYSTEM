@@ -1,0 +1,14 @@
+smart-agriculture/
+├── static/
+│   ├── css/
+│   │   └── style.css
+│   └── js/
+│       └── script.js
+├── templates/
+│   └── index.html
+├── app.py
+├── model/
+│   ├── crop_model.pkl
+│   ├── label_encoder.pkl
+│   └── scaler.pkl
+└── requirements.txt

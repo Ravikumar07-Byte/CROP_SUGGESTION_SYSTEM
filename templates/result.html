@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Agriculture | Prediction Result</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Re-use core styles from your index.html for consistency */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            /* Consistent parrot green background */
+            background: linear-gradient(135deg, #32CD32, #7CFC00);
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+            text-align: center;
+            overflow: hidden; /* Prevent scrollbars */
+            position: relative;
+        }
+
+        /* Background animation elements - copy from index.html for visual consistency */
+        .leaf {
+            position: absolute;
+            font-size: 2rem;
+            opacity: 0.3;
+            z-index: -1;
+            animation: fall linear infinite;
+        }
+
+        @keyframes fall {
+            to {
+                transform: translateY(100vh) rotate(360deg);
+            }
+        }
+
+        .grain {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: #d8b668;
+            border-radius: 50%;
+            opacity: 0.6;
+            z-index: -1;
+            animation: float linear infinite;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0) translateX(0);
+            }
+            25% {
+                transform: translateY(-10px) translateX(5px);
+            }
+            50% {
+                transform: translateY(-20px) translateX(-5px);
+            }
+            75% {
+                transform: translateY(-10px) translateX(5px);
+            }
+        }
+
+        /* Result container styling */
+        .result-container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 2.5rem;
+            width: 90%;
+            max-width: 600px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            transform: translateY(20px);
+            opacity: 0;
+            animation: fadeInScale 0.8s forwards;
+            max-height: 90vh; /* Ensure it fits vertically */
+            overflow-y: auto; /* Allow internal scrolling if content is too tall */
+        }
+
+        @keyframes fadeInScale {
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .result-container h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            color: #c5e1a5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .result-container h2 i {
+            font-size: 2.8rem;
+            color: #8bc34a;
+        }
+
+        .predicted-crop {
+            font-size: 3.5rem;
+            font-weight: bold;
+            color: #d8f8b7;
+            text-shadow: 0 0 15px rgba(126, 252, 0, 0.7);
+            margin-bottom: 2.5rem;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 0.8; }
+            50% { opacity: 1; }
+            100% { opacity: 0.8; }
+        }
+
+        .try-again-btn {
+            background: linear-gradient(45deg, #5a9e2f, #8bc34a);
+            color: white;
+            border: none;
+            padding: 0.8rem 2.5rem;
+            font-size: 1.2rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none; /* For the <a> tag */
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: bold;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .try-again-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+            background: linear-gradient(45deg, #4a8a24, #7bb342);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .result-container h2 {
+                font-size: 2rem;
+            }
+            .predicted-crop {
+                font-size: 2.8rem;
+            }
+            .try-again-btn {
+                padding: 0.7rem 2rem;
+                font-size: 1.1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .result-container {
+                padding: 1.5rem;
+            }
+            .result-container h2 {
+                font-size: 1.8rem;
+            }
+            .predicted-crop {
+                font-size: 2.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Background animation elements (optional, but good for consistency) -->
+    <div id="leaf-container"></div>
+    <div id="grain-container"></div>
+
+    <div class="result-container">
+        <h2><i class="fas fa-seedling"></i> Recommended Crop:</h2>
+        <p class="predicted-crop">{{ crop }}</p>
+        <a href="/" class="try-again-btn">
+            <i class="fas fa-undo-alt"></i> Try Another
+        </a>
+    </div>
+
+    <script>
+        // JavaScript for background animations (optional, copied from index.html)
+        const leafContainer = document.getElementById('leaf-container');
+        const grainContainer = document.getElementById('grain-container');
+
+        function createFallingElements(container, type, count, iconClass = '') {
+            if (!container) return; // Ensure container exists
+
+            for (let i = 0; i < count; i++) {
+                const element = document.createElement('div');
+                element.classList.add(type);
+                if (iconClass) {
+                    element.innerHTML = `<i class="${iconClass}"></i>`;
+                }
+                element.style.left = `${Math.random() * 100}vw`;
+                element.style.animationDuration = `${Math.random() * 5 + 5}s`; // 5-10 seconds
+                element.style.animationDelay = `${Math.random() * 5}s`;
+                element.style.opacity = `${Math.random() * 0.4 + 0.1}`; // 0.1-0.5
+                container.appendChild(element);
+            }
+        }
+
+        createFallingElements(leafContainer, 'leaf', 15, 'fas fa-leaf');
+        createFallingElements(grainContainer, 'grain', 20);
+    </script>
+</body>
+</html>

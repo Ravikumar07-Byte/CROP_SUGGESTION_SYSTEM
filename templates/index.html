@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Agriculture</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div id="leaf-container"></div>
+    <div id="grain-container"></div>
+    
+    <div class="page active" id="home-page">
+        <div class="home-page">
+            <h1>SMART AGRICULTURE</h1>
+            <p class="subtitle">Empowering farmers with data-driven crop recommendations for optimal yield and sustainable practices.</p>
+            <button class="start-btn" id="start-btn"><i class="fas fa-play-circle"></i> Get Started</button>
+        </div>
+    </div>
+
+    <div class="page" id="options-page">
+        <button class="nav-btn" id="back-to-home-btn" onclick="showPage(document.getElementById('home-page'))">
+            <i class="fas fa-arrow-left"></i> Back to Home
+        </button>
+        <h1>Choose Your Service</h1>
+        <div class="options-container">
+            <div class="option-card" id="crop-suggestion-option">
+                <i class="fas fa-seedling"></i>
+                <h3>Crop Suggestion System </h3>
+                <p>Get personalized crop recommendations based on your soil and weathher conditions.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Crop Suggestion Page -->
+    <div class="page" id="crop-suggestion-page">
+        <button class="nav-btn" id="back-to-options-btn" onclick="showPage(document.getElementById('options-page'))">
+            <i class="fas fa-arrow-left"></i> Back to Options
+        </button>
+        <!-- "Know More" button removed as requested -->
+
+        <div class="crop-form">
+            <h3>Enter below parameters </h3>
+            <form method="post" action="/predict">
+                <div class="form-container">
+                    <div class="form-column">
+                        <div class="input-field">
+                            <label for="N">Nitrogen (N) in soil:</label>
+                            <input type="number" id="N" name="N" step="any"  required>
+                        </div>
+                        <div class="input-field">
+                            <label for="P">Phosphorus (P) in soil :</label>
+                            <input type="number" id="P" name="P" step="any"  required>
+                        </div>
+                        <div class="input-field">
+                            <label for="K">Potassium (K) in soil </label>
+                            <input type="number" id="K" name="K" step="any"  required>
+                        </div>
+                    </div>
+                    <div class="form-column">
+                        <div class="input-field">
+                            <label for="pH">pH value of soil:</label>
+                            <input type="number" id="pH" name="pH" step="any"  required>
+                        </div>
+                        <div class="input-field">
+                            <label for="temperature">Temperature (°C):</label>
+                            <input type="number" id="temperature" name="temperature" step="any"  required>
+                        </div>
+                        <div class="input-field">
+                            <label for="rainfall">Rainfall (mm):</label>
+                            <input type="number" id="rainfall" name="rainfall" step="any"  required>
+                        </div>
+                    </div>
+                </div>
+                <div class="suggest-btn-container">
+                    <button type="submit" class="suggest-btn">
+                        <i class="fas fa-lightbulb"></i> Recommend Crop
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Link to your external JavaScript file -->
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+    <script>
+        // Define showPage globally so it can be called from inline onclick attributes
+        // This is a fallback/helper for the script.js to ensure it's available.
+        window.showPage = function(pageToShow) {
+            const homePage = document.getElementById('home-page');
+            const optionsPage = document.getElementById('options-page');
+            const cropSuggestionPage = document.getElementById('crop-suggestion-page');
+            
+            [homePage, optionsPage, cropSuggestionPage].forEach(page => {
+                if (page) {
+                    page.classList.remove('active');
+                }
+            });
+            if (pageToShow) {
+                pageToShow.classList.add('active');
+            }
+        };
+    </script>
+</body>
+</html>
